@@ -32,7 +32,7 @@
      [:url "http://www.eclipse.org/legal/epl-v10.html"]]]
    [:developers
     [:developer
-     [:name "Franksiebenlist"]]]
+     [:name "Frank Siebenlist"]]]
    [:scm
     [:url "https://github.com/franks42/sorted-map-atom"]
     [:connection "scm:git:https://github.com/franks42/sorted-map-atom.git"]
