@@ -1,15 +1,17 @@
 (ns franks42.sorted-map-atom-test
-  (:refer-clojure :exclude [assoc! update! update-in! into! conj! merge! dissoc!])
-  (:require [clojure.test :refer :all]
+  (:refer-clojure :exclude [assoc! update! dissoc! conj! merge! into! update-in!])
+  (:require [clojure.test :refer [deftest is testing]]
             [babashka.fs :as fs]
             [franks42.sorted-map-atom :as sma]
             [duratom.core :as dc]))
 
 ;;
 
-(def duratom-test-file "/var/db/duratom/sorted-map-atom-test")
+(def duratom-test-dir (or (System/getenv "TMPDIR")
+                          (and (fs/directory? "/tmp") "/tmp")
+                          (and (fs/directory? "/var/tmp") "/var/tmp")))
 
-;; (fs/delete-if-exists duratom-test-file)
+(def duratom-test-file (str duratom-test-dir "sorted-map-atom-test"))
 
 (defn test-duratom []
   (fs/delete-if-exists duratom-test-file)
@@ -118,114 +120,3 @@
   ;;
   )
 
-
-
-
-
-
-(comment
-  ;;
-
-  (def sma (sma/sorted-map-atom 1 11 2 22))
-  @sma
-  sma
-  (type @sma)
-  (sorted? @sma)
-  (sorted? sma)
-
-  (sma 1)
-  (@sma 1)
-  (sma :a)
-
-  (sma/clear! sma)
-  (sma/assoc! sma :a 1 :b 2)
-  @sma
-  (sma :a)
-  (sma :z)
-  (sma :z :oh-no)
-  (:a sma)
-  (:z sma)
-  (:z sma :oh-no)
-  (@sma :a)
-
-
-  ;;
-  (sma/clear! sma)
-
-  (sma/assoc! sma 3 33)
-  (sma/assoc! sma 4 44 5 55 6 66)
-  sma
-  @sma
-  (type sma)
-  (instance? clojure.lang.IAtom sma)
-  (instance? clojure.lang.IAtom (.atm sma))
-  (instance? sma/MutableAssociativeP sma)
-  (satisfies? sma/MutableAssociativeP sma)
-  (instance? clojure.lang.IDeref sma)
-  (satisfies? clojure.lang.IDeref sma)
-
-
-
-  ;;
-  (def tst-atom-map (dc/duratom :local-file
-                                :file-path "/var/db/duratom/tst-kv"
-                                :init (sorted-map)))
-
-  (type tst-atom-map)
-  (type @tst-atom-map)
-  (instance? clojure.lang.IAtom2 tst-atom-map)
-  (instance? clojure.lang.IAtom tst-atom-map)
-
-  ;;
-
-  (def tst-aa (AssociativeAtom. tst-atom-map))
-  (def tst-aa (AssociativeAtom. (atom {})))
-  (type tst-aa)
-  (.aa tst-aa)
-
-  (assoc! tst-aa 1 11)
-  (.aa tst-aa)
-  @(.aa tst-aa)
-
-  (defn mutable-sorted-durable-atom-map [map-name key-type])
-
-  (dc/map->Duratom)
-
-  (def sm (sorted-map))
-  (type sm)
-  (def sm1 (assoc sm :a 1))
-  (type sm1)
-  (assoc sm1 "a" 1)
-  (def sm2 (dissoc sm1 :a))
-  (type sm2)
-  (assoc sm2 "a" 1)
-
-
-  (extend-type)
-
-  (def a-m (atom {}))
-  @a-m
-  (def a-s-m (atom (sorted-map)))
-  @a-s-m
-  (def a-v (atom []))
-  @a-v
-
-  (swap! a-m assoc :a 1)
-
-  (defn a-m-assoc! [a-m k0 v0 & kvs]
-    (assert (map? @a-m) (str "atom managed value is not a map but: " (type @a-m)))
-    (swap! a-m (fn [m kvs] (apply assoc m kvs)) (into [k0 v0] kvs)))
-
-  (a-m-assoc! a-m :b 2 :c 3)
-  (a-m-assoc! a-v :b 2)
-
-  (a-m-assoc! a-s-m)
-  (a-m-assoc! a-s-m :b 2)
-  (a-m-assoc! a-s-m :a 1)
-  (a-m-assoc! a-s-m :a 11)
-  (a-m-assoc! a-s-m "a" 1)
-
-  (deref a-s-m)
-
-  ;;
-  )

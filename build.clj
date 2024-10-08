@@ -24,7 +24,7 @@
   opts)
 
 (defn- pom-template [version]
-  [[:description "FIXME: my new library."]
+  [[:description "Small convenience library to use familiar assoc!/dissoc!/conj!/merge!/into!/update!/update-in! to update/mutate a sorted-map backed by an atom."]
    [:url "https://github.com/franks42/sorted-map-atom"]
    [:licenses
     [:license

@@ -1,15 +1,9 @@
 (ns franks42.sorted-map-atom
   (:refer-clojure :exclude [assoc! update! update-in! into! conj! merge! dissoc!])
   (:require
-   [cheshire.core :as json]
    [clojure.pprint :as pp]
-   [clojure.set]
-   [clojure.string]
-   [duratom.core :as dc]
-   [tick.core :as t])
-  (:import
-   [clojure.lang MapEntry]
-   [java.lang Double Long]))
+   )
+  )
 
 ;;
 
@@ -81,20 +75,30 @@
 ;;
 
 (defn sorted-map-atom
-  "Factory function for a mutable sorted map backed by an atom.
+  "Factory function that returns a reference to a mutable sorted map backed by an atom.
    That sorted map can be durable when backed by a 'duratom'.
    The achived abstraction is a (durable) mutable sorted map that is 
    updated and mutated by well-understood associative functions, 
    like assoc!, dissoc!, conj!, merge!, into!, update!, update-in!.
    Under the cover, those functions use their immutable counter-parts
-   and swap! to update the sorted-map backed by the atom, but unlike their immutable 
-   counterparts, they actually update the actual sorted map backed by the atom with 
-   the same transactional properties of swap!.
-   Note that an immutable snapshot-copy of the value of the sorted-map 
-   backed by the atom, can be obtained thru the well known deref/@, like with any atom value.
+   and swap! to update and mutate the sorted-map backed by the atom,
+   with the same transactional properties of swap!.
+   Note that an immutable snapshot instance of the value of the sorted-map 
+   backed by the atom, can be obtained thru the familiar deref/@.
    The abstraction goal is to hide the details of the mutating interactions with the 
-   sorted-map+atom behind a more familiar interface and to provide less of a 
+   sorted-map+atom behind a more familiar associative interface and to provide less of a 
    (mental) impedance mismatch.
+   By default, the factory-fn creates a standard clojure.core/atom initialized with a 
+   sorted-map. Optionaly, an atom-like instance can be passed as the first argument, 
+   which will then be used for the atom instead. A duratom instance could be used to 
+   add durability to the sorted-map. See the tests for a duratom example.
+   Example:
+   (require '[franks42.sorted-map-atom :as sma])
+   (def sm (sma/sorted-map-atom)) ;=> #'franks42.sorted-map-atom/sm
+   @sm ;=> {}
+   (and (map? @sm) (sorted? @sm)) ;=> true
+   (sma/assoc! sm 1 1 2 2 3 3) ;=> #<SortedMapAtom@b4787a0: {1 1, 2 2, 3 3}
+   (deref sm) ;=> {1 1, 2 2, 3 3}
    "
   [& atm+keyvals-or-keyvals]
   (let [atm? (odd? (count atm+keyvals-or-keyvals))
