@@ -1,11 +1,22 @@
 (ns franks42.sorted-map-atom-test
   (:refer-clojure :exclude [assoc! update! dissoc! conj! merge! into! update-in!])
-  (:require [clojure.test :refer [deftest is testing]]
-            [babashka.fs :as fs]
-            [franks42.sorted-map-atom :as sma]
-            [duratom.core :as dc]))
+  (:use [clojure.test])
+  (:require
+  ;;  [clojure.test :refer [deftest is testing #_thrown? #_thrown-with-msg? are]]
+  ;;  [clojure.test :refer :all]
+   [babashka.fs :as fs]
+   [franks42.sorted-map-atom :as sma]
+   [duratom.core :as dc]))
 
 ;;
+;; user=> (is (thrown? ArithmeticException (/ 1 0)))
+;; #<ArithmeticException java.lang.ArithmeticException: Divide by zero>
+
+;; user=> (is (thrown-with-msg? ArithmeticException #"Divide by zero"
+;;   #_=>                       (/ 1 0)))
+;; #<ArithmeticException java.lang.ArithmeticException: Divide by zero>
+;; user=> 
+;; 
 
 (def duratom-test-dir (or (System/getenv "TMPDIR")
                           (and (fs/directory? "/tmp") "/tmp")
@@ -119,4 +130,3 @@
       ;;
   ;;
   )
-
