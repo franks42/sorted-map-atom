@@ -1,6 +1,6 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.12.0"}
-        babashka/fs {:mvn/version "0.5.22"}
+        babashka/fs {:mvn/version "0.5.24"}
         duratom/duratom {:mvn/version "0.5.9"}
         ;;
         }
@@ -8,6 +8,7 @@
  {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                  slipset/deps-deploy {:mvn/version "0.2.2"}}
           :ns-default build}
+  :dev {:deps {clj-ns-browser/clj-ns-browser {:mvn/version "2.0.0-SNAPSHOT"}}}
   :test {:extra-paths ["test"]
          :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
                       io.github.cognitect-labs/test-runner
